@@ -1,0 +1,98 @@
+var services = require('./src')({
+  ctx: window
+})
+
+document.addEventListener('DOMContentLoaded', function() {
+  var showDesktopNotifications = document.getElementById('show-desktop-notifications')
+  var notificationsError = document.getElementById('notifications-error')
+  var optionsError = document.getElementById('option-error')
+
+  var StorageOption = new services.Option(window, services.storeSync, {
+    id: 'recents-storage-size',
+    type: 'value',
+    storeKey: 'storageSize',
+    onChange: function(option) {
+      if (option.element.value == '') {
+        option.element.value = services.store.get('storageSize')
+      }
+
+      option.write().then(function(response) {
+        ping('info', response)
+        refresh()
+      }).catch(function(error) {
+        if (error.hasOwnProperty('name')) {
+          optionsError.style.display = 'block'
+          ping('error', error)
+        }
+      })
+    }
+  })
+
+  var ShowNotificationsOption = new services.Option(window, services.storeSync, {
+    id: 'show-desktop-notifications',
+    type: 'checked',
+    storeKey: 'showNotifications',
+    onChange: function(option) {
+      if (showDesktopNotifications.checked) {
+        services.permissions.request('notifications').then(function(granted) {
+          if (granted) {
+            ping('info', granted)
+          }
+
+          return option.write(granted)
+        }).catch(function(error) {
+          ping('error', error)
+          notificationsError.style.display = 'block';
+        })
+      } else {
+        option.write().catch(function(error) {
+          optionsError.style.display = 'block'
+          ping('error', error)
+        })
+      }
+    }
+  })
+
+  var PlayNotificationsOption = new services.Option(window, services.storeSync, {
+    id: 'play-notifications-sound',
+    type: 'checked',
+    storeKey: 'playNotifications',
+    onChange: function(option) {
+      option.write().then(function(response) {
+        ping('info', response)
+      }).catch(function(error) {
+        optionsError.style.display = 'block'
+        ping('error', error)
+      })
+    }
+  })
+
+  var EnableNerdsStackOption = new services.Option(window, services.storeSync, {
+    id: 'enable-nerds-stack',
+    type: 'checked',
+    storeKey: 'nerdsStack',
+    onChange: function(option) {
+      option.write().then(function(response) {
+        ping('info', response)
+      }).catch(function(error) {
+        optionsError.style.display = 'block'
+        ping('error', error)
+      })
+    }
+  })
+
+  function ping(type, message) {
+    window.chrome.runtime.sendMessage({
+      mode: 'ping',
+      type: type,
+      message: message
+    })
+  }
+
+  function refresh() {
+    StorageOptions.read()
+    ShowNotificationsOption.read()
+    PlayNotificationsOption.read()
+    EnableNerdsStackOption.read()
+  }
+})
