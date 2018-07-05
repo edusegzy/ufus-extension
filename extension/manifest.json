@@ -1,0 +1,44 @@
+{
+  "name": "Ufus",
+  "version": "1.9.0",
+  "description": "ultra fast URL shortener",
+  "homepage_url": "http://www.ufus.cc",
+  "manifest_version": 2,
+  "minimum_chrome_version": "52",
+  "icons": {
+    "16": "images/icon16.png",
+    "32": "images/icon32.png",
+    "48": "images/icon48.png",
+    "128": "images/icon128.png"
+  },
+  "permissions": [
+    "storage",
+    "clipboardRead",
+    "clipboardWrite"
+  ],
+  "optional_permissions": [
+    "tabs",
+    "notifications",
+    "contextMenus"
+  ],
+  "background": {
+    "persistent": false,
+    "scripts": [
+      "build/main.js"
+    ]
+  },
+  "browser_action": {
+    "default_icon": {
+      "16": "images/icon16.png",
+      "32": "images/icon32.png",
+      "48": "images/icon48.png",
+      "128": "images/icon128.png"
+    },
+    "default_title": "Ufus",
+    "default_popup": "popup.html"
+  },
+  "options_ui": {
+    "page": "options.html",
+    "chrome_style": true
+  }
+}
