@@ -1,7 +1,5 @@
 {
   "name": "ufus-extension",
-  "version": "1.0.0",
-  "main": "index.js",
   "license": "MIT",
   "author": "Akinjide Bankole <r@akinjide.me>",
   "scripts": {
