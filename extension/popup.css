@@ -1,0 +1,114 @@
+.main {
+  margin-top: 20px;
+  overflow-y: hidden;
+}
+
+#shorten { position: relative }
+
+#shorten input {
+  height: 20px;
+  min-width: 260px;
+  width: auto;
+  border: 1px solid #767f8a;
+  border-radius: 3px;
+  padding: 10px 30px 10px 10px;
+  font-size: 14px;
+  display: block;
+  margin: 0 auto;
+  color: #515050;
+  outline: none;
+  font-weight: 400;
+}
+
+#shorten img {
+  position: absolute;
+  top: 12px;
+  right: 6px;
+}
+
+#shorten .help-text {
+  font-style: italic;
+  margin-top: 4px;
+}
+
+#recents { color: #515050 }
+
+#recents h2 {
+  font-size: 26px;
+  margin: 6px 0 8px;
+  display: inline-block;
+}
+
+#recents pre {
+  max-height: 380px;
+  overflow-y: scroll;
+  margin-bottom: 2.5em;
+  margin-top: 0;
+  font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+  display: block;
+  padding: 8px;
+  font-size: 12px;
+  line-height: 1.846;
+  word-break: break-all;
+  word-wrap: break-word;
+  color: #212121;
+  background-color: #f5f5f5;
+  border: 1px solid #cccccc;
+  border-radius: 3px;
+  white-space: pre-wrap;
+}
+
+#recents pre code {
+  padding: 0;
+  font-size: inherit;
+  color: inherit;
+  white-space: pre-wrap;
+  background-color: transparent;
+}
+
+#recents #clear {
+  border: none;
+  background: transparent;
+  text-decoration: underline;
+  font-size: 14px;
+  cursor: pointer;
+  outline: none;
+}
+
+#normal-stack { margin-bottom: 2.5em; }
+
+#normal-stack .normal-stack-container {
+  background: #FFFFFF;
+  border: 1px solid #cccccc;
+  padding: 8px;
+  position: relative;
+  font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+  margin-bottom: 10px;
+}
+
+#normal-stack #long-url {
+  white-space: pre-wrap;
+  word-break: break-all;
+  word-wrap: break-word;
+  font-size: 12px;
+  font-weight: 600;
+  margin: 18px 0 2px;
+}
+
+#normal-stack #short-url {
+  display: inline-block;
+  font-size: 12px;
+  margin: 2px 0;
+}
+
+#normal-stack #requested-at {
+  font-size: 12px;
+  position: absolute;
+  right: 10px;
+}
+
+#popup-error {
+  color: #A62929;
+  margin-bottom: 10px;
+  display: block;
+}

@@ -20,6 +20,7 @@ var Lib = require('./lib')
 
 /**
  * Expose Services
+ * @constructor
  */
 
 module.exports = function Services(options) {

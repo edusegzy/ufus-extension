@@ -1,0 +1,30 @@
+#notifications-options,
+#storage-options,
+#retro-options {
+  -webkit-padding-start: 28px;
+}
+
+#notifications-options h3,
+#storage-options h3,
+#retro-options h3 {
+  -webkit-margin-start: -18px;
+  color: #515050;
+}
+
+#notifications-options h3 + p {
+  margin-top: 0;
+}
+
+#notifications-options span#notifications-error,
+#option-error {
+  color: #A62929
+}
+
+#storage-options input[type='text'] {
+  width: 350px;
+}
+
+#storage-options span.description {
+  font-style: italic;
+  color: grey;
+}

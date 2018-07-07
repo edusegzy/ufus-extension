@@ -15,6 +15,8 @@ Lib.prototype.datetime = function(dt) {
   var d = new Date(dt)
 
   return d.toLocaleString("en-us", {
+    hour: 'numeric',
+    minute: 'numeric',
     month: 'long',
     year: 'numeric',
     day: 'numeric'
