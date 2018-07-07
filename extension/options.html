@@ -3,39 +3,7 @@
   <head>
     <meta charset="utf-8">
     <title>Ufus</title>
-    <style>
-      #notifications-options,
-      #storage-options,
-      #legendary-options {
-        -webkit-padding-start: 28px;
-      }
-    
-      #notifications-options h3,
-      #storage-options h3,
-      #legendary-options h3 {
-        -webkit-margin-start: -18px;
-        color: #515050;
-      }
-
-      #notifications-options h3 + p {
-        margin-top: 0;
-      }
-    
-      #notifications-options span#notifications-error,
-      #option-error {
-        color: rgba(166, 41, 41, 255)
-      }
-    
-      #storage-options input[type='text'] {
-        width: 350px;
-      }
-    
-      #storage-options span.description {
-        font-style: italic;
-        color: grey;
-      }
-    </style>
-    
+    <link rel="stylesheet" href="options.css">
     <script defer src="build/options.js"></script>
   </head>
   <body>
@@ -43,7 +11,7 @@
     <section id="storage-options">
       <h3>Storage</h3>
       <label for="recents-storage-size">Maximum recents to remember</label>
-      <input type="text" id="recents-storage-size" autofocus placeholder="e.g. 10">
+      <input type="text" id="recents-storage-size" autofocus placeholder="10">
       <span class="description">Specify the maximum shortened recents to store.</span>
     </section>
 
@@ -61,8 +29,8 @@
       </p>
     </section>
 
-    <section id="legendary-options">
-      <h3>Legendary</h3>
+    <section id="retro-options">
+      <h3>Retro</h3>
       <p>
         <input type="checkbox" id="enable-nerds-stack">
         <label for="enable-nerds-stack">Enable nerds stack</label>
