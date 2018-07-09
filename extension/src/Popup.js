@@ -8,6 +8,7 @@ function Popup(ctx, store, storeSync, options) {
   this.id = options.id
   this.type = options.type
   this.eventKey = options.eventKey
+  this.services = options.services
   this.event = options.event
   this.element = this._ctx.document.getElementById(this.id)
 

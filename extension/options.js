@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', function() {
     storeKey: 'readActiveTab',
     onChange: function(option) {
       option.write().then(function(response) {
-        ping('notify')
+        ping('info', response)
       }).catch(function(error) {
         optionsError.style.display = 'block'
         ping('error', error)

@@ -11,13 +11,14 @@ function detectConnectionHandler(event) {
   services.badge.default('network')
 }
 
-function pong(request, _) {  
+function pong(request, _, respond) {
   console.log(request)
     
   if (request && request.mode) {
     switch (request.type) {
       case 'error':
         services.badge.error(request.message.name || 'default')
+
         break
 
       case 'info':
@@ -35,16 +36,43 @@ function pong(request, _) {
           services.storeSync.get('playNotifications')
         ])
         .then(function(response) {
-          if (response && response[0].showNotifications) {
-            services.notifications.show(request.message)
-          }
+          if (response) {
+            if (response[0].showNotifications) {
+              services.notifications.show(request.message)
+            }
 
-          if (response && response[1].playNotifications) {
-            services.notifications.play()
+            if (response && response[1].playNotifications) {
+              services.notifications.play()
+            }
           }
         })
 
         break
+
+      case 'copy':
+        services.clipboard.copy(request.message)
+
+        break
+
+      /*
+       * process network request, persist and respond to caller
+       */
+      case 'process':
+        var popup = new services.Popup(window, services.store, services.storeSync, {})
+
+        services.api.request({ long_url: request.message.long_url })
+          .then(function(response) {
+            pong({ mode: 'ping', type: 'notify', message: response })
+            return popup.write(response, 'recents')
+          })
+          .then(function() {
+            respond('OK')
+          })
+          .catch(function(error) {
+            pong({ mode: 'ping', type: 'error', message: error })
+          })
+
+        return true
     }
   }
 }
@@ -76,7 +104,7 @@ services.permissions.query('notifications').then(function(granted) {
       services.notifications.close(id).then(function() {
         services.notifications.remove(id)
       }).catch(function(error) {
-        // TOOD: handle error
+        pong({ mode: 'ping', type: 'error', message: error })
       })
     })
 
@@ -84,15 +112,15 @@ services.permissions.query('notifications').then(function(granted) {
       services.notifications.close(id).then(function() {
         services.notifications.remove(id)
       }).catch(function(error) {
-        // TOOD: handle error
+        pong({ mode: 'ping', type: 'error', message: error })
       })
     })
   }
 }).catch(function(error) {
-  // TOOD: handle error
+  pong({ mode: 'ping', type: 'error', message: error })
 })
 
 window.chrome.runtime.onInstalled.addListener(installerHandler)
-window.chrome.runtime.onMessage.addListener(pong);
+window.chrome.runtime.onMessage.addListener(pong)
 
 main()

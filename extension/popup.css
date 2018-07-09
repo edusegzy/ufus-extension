@@ -40,9 +40,9 @@
 }
 
 #recents pre {
-  max-height: 380px;
+  max-height: 400px;
   overflow-y: scroll;
-  margin-bottom: 2.5em;
+  margin-bottom: 2.0em;
   margin-top: 0;
   font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
   display: block;
@@ -75,7 +75,7 @@
   outline: none;
 }
 
-#normal-stack { margin-bottom: 2.5em; }
+#normal-stack { margin-bottom: 2.0em; }
 
 #normal-stack .normal-stack-container {
   background: #FFFFFF;
@@ -107,8 +107,13 @@
   right: 10px;
 }
 
-#popup-error {
+#popup-alert {
   color: #A62929;
-  margin-bottom: 10px;
+  padding: 4px 0;
   display: block;
+  position: fixed;
+  z-index: 100;
+  background: #FFFFFF;
+  top: 0;
+  width: 100%;
 }

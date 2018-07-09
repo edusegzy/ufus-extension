@@ -9,24 +9,24 @@ document.addEventListener('DOMContentLoaded', function() {
     id: 'link',
     type: 'value',
     eventKey: 'onPaste',
+    services: {
+      activityIndicator: activityIndicator,
+      dom: {
+        stack: {
+          nerd: document.getElementById('nerd-stack'),
+          normal: document.getElementById('normal-stack')
+        },
+        recents: document.getElementById('recents')
+      }
+    },
     event: 'paste',
     onPaste: function(popup, e) {
-      activityIndicator.style.display = 'block'
+      popup.services.activityIndicator.style.display = 'block'
 
       popupActionHandler(popup, e)
         .then(function(response) {
-          ping('notify', response)
-          return popup.write(response, 'recents')
+          refreshFrame(popup)
         })
-        .then(function() {
-          refreshFrame(popup, activityIndicator)
-        })
-        .catch(function(error) {
-          ping('error', error)
-          popup.element.value = ''
-          activityIndicator.style.display = 'none'
-        })
-
     }
   })
 
@@ -34,22 +34,16 @@ document.addEventListener('DOMContentLoaded', function() {
     id: 'link-form',
     eventKey: 'onSubmit',
     event: 'submit',
+    services: {
+      activityIndicator: activityIndicator
+    },
     onSubmit: function(popup, e) {
       e.preventDefault()
-      activityIndicator.style.display = 'block'
+      popup.services.activityIndicator.style.display = 'block'
 
       popupActionHandler(Link, e)
         .then(function(response) {
-          ping('notify', response)
-          return popup.write(response, 'recents')
-        })
-        .then(function() {
-          refreshFrame(Link, activityIndicator)
-        })
-        .catch(function(error) {
-          ping('error', error)
-          Link.element.value = ''
-          activityIndicator.style.display = 'none'
+          refreshFrame(Link)
         })
     }
   })
@@ -60,46 +54,61 @@ document.addEventListener('DOMContentLoaded', function() {
     event: 'click',
     onClick: function(popup, e) {
       popup.store.remove('recents')
-      refreshFrame(popup, activityIndicator)
+      refreshFrame(popup)
     }
   })
 
-  main(Link, activityIndicator)
+  main(Link)
 })
 
 function popupActionHandler(popup, event) {
-  var longURL = popup.element.value || event.clipboardData.getData('text')
+  return popup.storeSync.get('readActiveTab')
+    .then(function(response) {
+      if (response.readActiveTab) {
+        // popup.services.activityIndicator.style.display = 'block'
+        return services.tabs.query({ active: true })
+      }
 
-  return services.tabs.query({ active: true }).then(function(tab) {
-    if (!(longURL)) {
+      return Promise.resolve([])
+    })
+    .then(function(tab) {
+      var longURL;
+
       if (tab && tab[0]) {
         longURL = popup.element.value = tab[0].url
         popup.element.select()
+      } else {
+        longURL = popup.element.value || (event && event.clipboardData.getData('text'))
       }
-    }
 
-    return services.api.request({ long_url: longURL })
-  })
+      return new Promise(function (resolve) {
+        if (longURL) {
+          ping('process', {
+            long_url: longURL
+          }, resolve)
+        }
+      })
+    })
 }
 
-function refreshFrame(popup, activityIndicator) {
+function refreshFrame(popup) {
   var recents = popup.read('recents')
 
   if (recents && recents[0]) {
     popup.storeSync.get('nerdsStack').then(function(response) {
 
       if (response.nerdsStack) {
-        document.getElementById('normal-stack').style.display = 'none'
-        document.getElementById('nerd-stack').innerHTML = JSON.stringify(recents, null, 2)
-        document.getElementById('recents').style.display = 'block'
+        popup.services.dom.stack.normal.style.display = 'none'
+        popup.services.dom.stack.nerd.innerHTML = JSON.stringify(recents, null, 2)
+        popup.services.dom.recents.style.display = 'block'
       } else {
-        document.getElementById('nerd-stack').style.display = 'none'
-        document.getElementById('normal-stack').innerHTML = null
+        popup.services.dom.stack.nerd.style.display = 'none'
+        popup.services.dom.stack.normal.innerHTML = null
 
         recents.forEach(function(obj, index) {
-          document.getElementById('normal-stack').insertAdjacentHTML(
+          popup.services.dom.stack.normal.insertAdjacentHTML(
             'beforeend',
-            '<div class="normal-stack-container">' +
+            '<div class="normal-stack-container" title="Click to copy shortened link">' +
               '<span id="requested-at">' + services.lib.datetime(obj.requested_at) + '</span>' +
               '<p id="long-url">' + services.lib.truncate(obj.long_url, 50) + '</p>' +
               '<p id="short-url">' + obj.short_url + '</p>' +
@@ -107,7 +116,8 @@ function refreshFrame(popup, activityIndicator) {
           )
 
           if (recents.length == (index + 1)) {
-            document.getElementById('recents').style.display = 'block'
+            popup.services.dom.recents.style.display = 'block'
+            registerStackHandler()
           }
         })
       }
@@ -116,30 +126,61 @@ function refreshFrame(popup, activityIndicator) {
 
     ping('info', recents.length)
   } else {
-    document.getElementById('recents').style.display = 'none'
+    popup.services.dom.recents.style.display = 'none'
   }
 
   popup.element.value = ''
-  activityIndicator.style.display = 'none'
+  popup.services.activityIndicator.style.display = 'none'
 }
 
-function ping(type, message) {
+function registerStackHandler() {
+  var popupAlert = document.getElementById('popup-alert');
+
+  [].slice.call(document.getElementsByClassName('normal-stack-container')).forEach(
+    function(stack, index) {
+      stack.style.cursor = 'pointer'
+      stack.addEventListener('click', function(e) {
+        popupAlert.style.display = 'block'
+        popupAlert.innerHTML = '* <strong>' + stack.lastChild.textContent + '</strong> Copied!'
+        ping('copy', stack.lastChild.textContent)
+      })
+    }
+  )
+}
+
+function ping(type, message, callback) {
   window.chrome.runtime.sendMessage({
     mode: 'ping',
     type: type,
     message: message
+  }, function(response) {
+    if (response) {
+      callback(response)
+    }
   })
 }
 
-function main(popup, activityIndicator) {
-  refreshFrame(popup, activityIndicator)
+function main(popup) {
+  refreshFrame(popup)
 
   if (services.store.get('tabs_permission') == void(0)) {
     services.permissions.request('tabs').then(function(granted) {
+      if (granted) {
+        popupActionHandler(popup)
+          .then(function(response) {
+            refreshFrame(popup)
+          })
+      }
+
       ping('info', granted)
     })
     .catch(function(error) {
       ping('error', error)
     })
+  } else {
+    popupActionHandler(popup)
+      .then(function(response) {
+        refreshFrame(popup)
+      })
   }
 }
