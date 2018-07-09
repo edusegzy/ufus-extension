@@ -81,6 +81,20 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   })
 
+  var ReadActiveTabOption = new services.Option(window, services.storeSync, {
+    id: 'read-active-tab',
+    type: 'checked',
+    storeKey: 'readActiveTab',
+    onChange: function(option) {
+      option.write().then(function(response) {
+        ping('notify')
+      }).catch(function(error) {
+        optionsError.style.display = 'block'
+        ping('error', error)
+      })
+    }
+  })
+
   function ping(type, message) {
     window.chrome.runtime.sendMessage({
       mode: 'ping',
@@ -94,5 +108,6 @@ document.addEventListener('DOMContentLoaded', function() {
     ShowNotificationsOption.read()
     PlayNotificationsOption.read()
     EnableNerdsStackOption.read()
+    ReadActiveTabOption.read()
   }
 })
