@@ -44,7 +44,8 @@ var defaults = {
   'storageSize': 10,
   'playNotifications': false,
   'showNotifications': false,
-  'nerdsStack': false
+  'nerdsStack': false,
+  'readActiveTab': false
 }
 
 exports.defaultTitle = defaults.appName
