@@ -1,4 +1,4 @@
-var Exception = require('./exception')
+var Exception = require('./Exception')
 
 module.exports = Network
 

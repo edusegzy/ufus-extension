@@ -38,7 +38,7 @@ Store.prototype.usage = function(key) {
       return reject(self._ctx.chrome.runtime.lastError)
     }
 
-    // usage https://stackoverflow.com/questions/4391575/how-to-find-the-size-of-localstorage
+    // Reference: https://stackoverflow.com/questions/4391575/how-to-find-the-size-of-localstorage
     for (_x in self._storage) {
       if (self._prefix + key == _x) {
         var KiBInUse = (((self._storage[_x].length + _x.length) * 2) / 1024)

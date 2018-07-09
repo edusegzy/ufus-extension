@@ -1,4 +1,4 @@
-var Exception = require('./exception')
+var Exception = require('./Exception')
 
 module.exports = Popup
 
@@ -10,9 +10,13 @@ function Popup(ctx, store, storeSync, options) {
   this.eventKey = options.eventKey
   this.event = options.event
   this.element = this._ctx.document.getElementById(this.id)
-  this.element.addEventListener(this.event, function(e) {
-    options[this.eventKey](this, e)
-  }.bind(this))
+
+  if (this.element) {
+    this.element.addEventListener(this.event, function(e) {
+      options[this.eventKey](this, e)
+    }.bind(this))
+  }
+
   this.store = store
   this.storeSync = storeSync
 }
