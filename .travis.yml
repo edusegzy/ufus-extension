@@ -2,14 +2,16 @@ language: node_js
 node_js:
 - node
 
-skip_cleanup: true
+before_deploy:
+  - yarn install --production=false 
+  - ls -al ./node_modules
 
 deploy:
+  skip_cleanup: true
   provider: script
   script: npm run deploy
   on:
     branch: master
-    tags: true
 
 env:
   global:
