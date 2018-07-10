@@ -8,8 +8,6 @@ deploy:
   script: npm run deploy
   on:
     branch: master
-    tags: true
 
 env:
-  global:
-    secure: b1NM+PGFG+C+ZDnTwBbhlOV8/RWG+7cQXG8qXhzoMNXp/qkYV9EQRfOtlv0eAllrKkhKT0UgHTSqxVeUgGJf2edX0MPauIa9mDb2CpM9fkmpCGQSF2KddkbLOuIlsYgdjUowyuxu/jG0/qshqgKThH2KgoKyEMNOMO7Mxt8QKjxmAU2ouutqsGV7RWup5wCj28+SqJUE4b6YPzOC82am+HZ0MV3qIBd4pwNDJB3Y6dEU6XNHWTjJR5VqZIVpgD6xzhkExz4QImyxX6wQvvk/qOs3nlKyJHMw7u6rX5x2IguFSq4X/+lEOonrKW+9xIsSO0ICGmFfcxZKICH3nkrAq3SGjJ4WkzmelpYx0uzdQ9FhXORzt6k1Xk5cZhDSm48CcapN8poEXxkPYdNz5z14LuzwBrxRShv/DnW3Io/mqB7qoAri8+HSaoJrxYLCOvt3WF1kT4o4WW1y+v3TsGorYRKfu4GRLhV2fOGnA22okQ4+q3GcGCLU1QECghF3wO8forNSQu6slzH4LpRgG6LJFP9W41JwunTJJSmqKuT0aqxsIdjYF+LBtVZQmHS0+n2NwCl0kaqNUxjF/gN89Acm1GIYYhia8D1npEjjuEqI5uk1qSA0qVDk934P8rJLyuAkCh2O9NpJPlXor1a2FqSBbgu5Ii7Wj+i+r18yra9Mb8k=
+  EXTENSION_ID=bkphhkjpkdbihooaidnlfmmmnjabkbac
