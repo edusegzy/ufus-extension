@@ -12,7 +12,6 @@ test('#datetime return visual formatted date and time', t => {
   let expect = dt.getFullYear()
   
   t.plan(4)
-  t.log(actual)
   t.true(actual.includes(expect))
   t.regex(actual, /\w+(\s\d+\,)+(\s)(\d+(\:|\2))+(AM|PM)/)
 
@@ -29,11 +28,9 @@ test('#truncate appends ellipsis to sliced string greater than {count}', t => {
   let expect = 'https://github.com/a...'
 
   t.plan(2)
-  t.log(actual)
   t.is(actual, expect)
 
   actual = services.lib.truncate('hello world', 5)
   expect = 'hello...'
-  t.log(actual)
   t.is(actual, expect)
 })

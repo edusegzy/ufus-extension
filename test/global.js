@@ -8,7 +8,7 @@ global.window = {
   },
   chrome: Object.assign({
     runtime: {},
-	notifications: {}
+    notifications: {}
   },
   chromeStub)
 }
