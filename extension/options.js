@@ -4,6 +4,7 @@ var services = require('./src')({
 
 document.addEventListener('DOMContentLoaded', function() {
   var showDesktopNotifications = document.getElementById('show-desktop-notifications')
+  var readTabs = document.getElementById('read-active-tab')
   var notificationsError = document.getElementById('notifications-error')
   var optionsError = document.getElementById('option-error')
 
@@ -20,10 +21,8 @@ document.addEventListener('DOMContentLoaded', function() {
         ping('info', response)
         refresh()
       }).catch(function(error) {
-        if (error.hasOwnProperty('name')) {
-          optionsError.style.display = 'block'
-          ping('error', error)
-        }
+        optionsError.style.display = 'block'
+        ping('error', error)
       })
     }
   })
@@ -86,12 +85,22 @@ document.addEventListener('DOMContentLoaded', function() {
     type: 'checked',
     storeKey: 'readActiveTab',
     onChange: function(option) {
-      option.write().then(function(response) {
-        ping('info', response)
-      }).catch(function(error) {
-        optionsError.style.display = 'block'
-        ping('error', error)
-      })
+      if (readTabs.checked) {
+        services.permissions.request('tabs').then(function(granted) {
+          if (granted) {
+            ping('info', granted)
+          }
+
+          return option.write(granted)
+        }).catch(function(error) {
+          ping('error', error)
+        })
+      } else {
+        option.write().catch(function(error) {
+          optionsError.style.display = 'block'
+          ping('error', error)
+        })
+      }
     }
   })
 
@@ -104,7 +113,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   function refresh() {
-    StorageOptions.read()
+    StorageOption.read()
     ShowNotificationsOption.read()
     PlayNotificationsOption.read()
     EnableNerdsStackOption.read()

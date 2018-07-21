@@ -9,9 +9,10 @@ document.addEventListener('DOMContentLoaded', function() {
     id: 'link',
     type: 'value',
     eventKey: 'onPaste',
+    event: 'paste',
     services: {
       activityIndicator: activityIndicator,
-      dom: {
+      DOM: {
         stack: {
           nerd: document.getElementById('nerd-stack'),
           normal: document.getElementById('normal-stack')
@@ -19,13 +20,15 @@ document.addEventListener('DOMContentLoaded', function() {
         recents: document.getElementById('recents')
       }
     },
-    event: 'paste',
     onPaste: function(popup, e) {
       popup.services.activityIndicator.style.display = 'block'
 
       popupActionHandler(popup, e)
         .then(function(response) {
           refreshFrame(popup)
+        })
+        .catch(function(error) {
+          popupBannerAlert(services.constants.ERROR.titles[error.name], popup)
         })
     }
   })
@@ -44,6 +47,9 @@ document.addEventListener('DOMContentLoaded', function() {
       popupActionHandler(Link, e)
         .then(function(response) {
           refreshFrame(Link)
+        })
+        .catch(function(error) {
+          popupBannerAlert(services.constants.ERROR.titles[error.name], Link)
         })
     }
   })
@@ -65,29 +71,34 @@ function popupActionHandler(popup, event) {
   return popup.storeSync.get('readActiveTab')
     .then(function(response) {
       if (response.readActiveTab) {
-        // popup.services.activityIndicator.style.display = 'block'
+        popup.services.activityIndicator.style.display = 'block'
         return services.tabs.query({ active: true })
       }
 
       return Promise.resolve([])
     })
     .then(function(tab) {
-      var longURL;
+      var URL;
 
-      if (tab && tab[0]) {
-        longURL = popup.element.value = tab[0].url
+      if ((tab && tab[0]) && !popup.element.value) {
+        URL = popup.element.value = tab[0].url
         popup.element.select()
       } else {
-        longURL = popup.element.value || (event && event.clipboardData.getData('text'))
+        URL = popup.element.value || (event && event.clipboardData.getData('text'))
       }
 
-      return new Promise(function (resolve) {
-        if (longURL) {
-          ping('process', {
-            long_url: longURL
-          }, resolve)
+      return new Promise(function (resolve, reject) {
+        if (URL) {
+          ping('process', { long_url: URL }, function(response) {
+            if (response.error != null) {
+              return reject(response.error)
+            }
+
+            resolve(response.data)
+          })
         }
       })
+
     })
 }
 
@@ -98,15 +109,15 @@ function refreshFrame(popup) {
     popup.storeSync.get('nerdsStack').then(function(response) {
 
       if (response.nerdsStack) {
-        popup.services.dom.stack.normal.style.display = 'none'
-        popup.services.dom.stack.nerd.innerHTML = JSON.stringify(recents, null, 2)
-        popup.services.dom.recents.style.display = 'block'
+        popup.services.DOM.stack.normal.style.display = 'none'
+        popup.services.DOM.stack.nerd.innerHTML = JSON.stringify(recents, null, 2)
+        popup.services.DOM.recents.style.display = 'block'
       } else {
-        popup.services.dom.stack.nerd.style.display = 'none'
-        popup.services.dom.stack.normal.innerHTML = null
+        popup.services.DOM.stack.nerd.style.display = 'none'
+        popup.services.DOM.stack.normal.innerHTML = null
 
         recents.forEach(function(obj, index) {
-          popup.services.dom.stack.normal.insertAdjacentHTML(
+          popup.services.DOM.stack.normal.insertAdjacentHTML(
             'beforeend',
             '<div class="normal-stack-container" title="Click to copy shortened link">' +
               '<span id="requested-at">' + services.lib.datetime(obj.requested_at) + '</span>' +
@@ -116,7 +127,7 @@ function refreshFrame(popup) {
           )
 
           if (recents.length == (index + 1)) {
-            popup.services.dom.recents.style.display = 'block'
+            popup.services.DOM.recents.style.display = 'block'
             registerStackHandler()
           }
         })
@@ -124,9 +135,9 @@ function refreshFrame(popup) {
 
     })
 
-    ping('info', recents.length)
+    ping('info', { count: recents.length })
   } else {
-    popup.services.dom.recents.style.display = 'none'
+    popup.services.DOM.recents.style.display = 'none'
   }
 
   popup.element.value = ''
@@ -134,18 +145,27 @@ function refreshFrame(popup) {
 }
 
 function registerStackHandler() {
-  var popupAlert = document.getElementById('popup-alert');
-
   [].slice.call(document.getElementsByClassName('normal-stack-container')).forEach(
     function(stack, index) {
       stack.style.cursor = 'pointer'
       stack.addEventListener('click', function(e) {
-        popupAlert.style.display = 'block'
-        popupAlert.innerHTML = '* <strong>' + stack.lastChild.textContent + '</strong> Copied!'
+        popupBannerAlert('* <strong>' + stack.lastChild.textContent + '</strong> Copied!')
         ping('copy', stack.lastChild.textContent)
       })
     }
   )
+}
+
+function popupBannerAlert(message, popup) {
+  var popupAlert = document.getElementById('popup-alert')
+
+  if (popup) {
+    // popup.element.value = ''
+    popup.services.activityIndicator.style.display = 'none'
+  }
+
+  popupAlert.style.display = 'block'
+  popupAlert.innerHTML = (message || 'Unknown error')
 }
 
 function ping(type, message, callback) {
@@ -163,24 +183,12 @@ function ping(type, message, callback) {
 function main(popup) {
   refreshFrame(popup)
 
-  if (services.store.get('tabs_permission') == void(0)) {
-    services.permissions.request('tabs').then(function(granted) {
-      if (granted) {
-        popupActionHandler(popup)
-          .then(function(response) {
-            refreshFrame(popup)
-          })
-      }
-
-      ping('info', granted)
-    })
-    .catch(function(error) {
-      ping('error', error)
-    })
-  } else {
-    popupActionHandler(popup)
-      .then(function(response) {
-        refreshFrame(popup)
-      })
-  }
+  popupActionHandler(popup).then(function(response) {
+    console.log(response, 'line 189')
+    refreshFrame(popup)
+  })
+  .catch(function(error) {
+    console.log(error, 'line 192')
+    popupBannerAlert(services.constants.ERROR.titles[error.name], popup)
+  })
 }
