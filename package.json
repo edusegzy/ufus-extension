@@ -5,7 +5,7 @@
   "scripts": {
     "build:watch": "webpack --mode=development --watch --devtool=source-map",
     "build": "webpack --mode=production",
-    "deploy": "npm run build && webstore upload --source=extension --auto-publish",
+    "deploy": "npm run build && webstore upload --source=extension",
     "test:watch": "ava --verbose --watch",
     "test": "ava"
   },
