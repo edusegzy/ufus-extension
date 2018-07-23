@@ -43,4 +43,4 @@ Opt-in to receive desktop notifications when URL's shortened successfully. Click
 
 ## License
 
-MIT © [Akinjide Bankole](htttps://www.akinjide.me)
+MIT © [Akinjide Bankole](https://www.akinjide.me)
