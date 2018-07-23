@@ -24,7 +24,7 @@ Option.prototype.read = function() {
 
       resolve(response)
     }).catch(function(error) {
-      if (error) {
+      if (error != null) {
         reject(new Exception(error.name, error.message))
       }
     })
@@ -42,7 +42,9 @@ Option.prototype.write = function(override) {
     self.storeSync.set({ [self.storeKey]: self.element[self.type] }).then(function(response) {
       resolve(response)
     }).catch(function(error) {
-      reject(new Exception(error.name, error.message))
+      if (error != null) {
+        reject(new Exception(error.name, error.message))
+      }
     })
   })
 }

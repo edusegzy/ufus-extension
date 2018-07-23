@@ -4,7 +4,8 @@ var Store = require('./Store')
 module.exports = StoreSync
 
 
-function StoreSync(ctx, defaults) {
+// TODO: add support for namespace (local and sync), currently just sync
+function StoreSync(ctx, defaults, namespace) {
   Store.call(this, ctx, defaults.storePrefix + 'sync:', defaults)
 }
 
@@ -80,7 +81,7 @@ StoreSync.prototype.clear = function() {
         return reject(new Exception('LRUNTIME_ERR', self._ctx.chrome.runtime.lastError))
       }
 
-      resolve(resonse)
+      resolve(response)
     })
   })
 }

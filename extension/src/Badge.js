@@ -20,7 +20,6 @@ Badge.prototype.warn = function(message) {
 
 Badge.prototype.error = function(message) {
   this._options = this._data('ERROR', message)
-  console.log(this._options)
   this._render(this._ctx)
 }
 

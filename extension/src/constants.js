@@ -8,8 +8,9 @@ var constants = {
     'titles': {
       'default': 'Unknown error',
       'SERVER_ERR': 'Internet connection problem. Connect and try again',
-      'CLIENT_ERR': 'Swap! You are trying to do something useful',
-      'QUOTA_EXCEEDED_ERR': 'You have exceeded the max quota you specified'
+      'CLIENT_ERR': 'OH SNAP! Please check the url and try again',
+      'QUOTA_EXCEEDED_ERR': 'Oopsie, You have exceeded the max quota you specified in options',
+      'TypeError': 'We hit a snag shortening that URL'
     }
   },
   WARN: {

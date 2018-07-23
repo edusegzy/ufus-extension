@@ -79,12 +79,12 @@
 
 #normal-stack .normal-stack-container {
   background: #FFFFFF;
-  border: 1px solid #cccccc;
+  border: 1px solid #d1d5da;
   padding: 8px;
   position: relative;
   font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
   margin-bottom: 10px;
-  /*border-radius: 8px;*/
+  /* border-radius: 3px; */
 }
 
 #normal-stack #long-url {
@@ -101,7 +101,7 @@
   display: inline-block;
   font-size: 12px;
   margin: 2px 0;
-  /* color: #006621;
+  /* color: #006621; */
 }
 
 #normal-stack #requested-at {

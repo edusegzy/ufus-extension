@@ -184,11 +184,9 @@ function main(popup) {
   refreshFrame(popup)
 
   popupActionHandler(popup).then(function(response) {
-    console.log(response, 'line 189')
     refreshFrame(popup)
   })
   .catch(function(error) {
-    console.log(error, 'line 192')
     popupBannerAlert(services.constants.ERROR.titles[error.name], popup)
   })
 }
