@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', function() {
     event: 'click',
     onClick: function(popup, e) {
       popup.store.remove('recents')
-      refreshFrame(popup)
+      refreshFrame(Link)
     }
   })
 
