@@ -62,7 +62,10 @@ function pong(request, _, respond) {
         var assert = queue.indexOf(request.message.long_url) > -1
 
         if (assert) {
-          respond({ error: new services.Exception('OQUEUEF_ERR', 'processing too much request'), data: null })
+          respond({
+            error: new services.Exception('OQUEUEF_ERR', 'processing too much request'),
+            data: null
+          })
           break
         }
 
