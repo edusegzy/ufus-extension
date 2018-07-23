@@ -34,7 +34,7 @@ Option.prototype.read = function() {
 Option.prototype.write = function(override) {
   var self = this
 
-  if (override) {
+  if (override != void(0)) {
     this.element[this.type] = override
   }
 

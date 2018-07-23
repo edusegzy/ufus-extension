@@ -89,6 +89,7 @@ function popupActionHandler(popup, event) {
 
       return new Promise(function (resolve, reject) {
         if (URL) {
+          popup.element.disabled = true
           ping('process', { long_url: URL }, function(response) {
             if (response.error != null) {
               return reject(response.error)
@@ -134,13 +135,13 @@ function refreshFrame(popup) {
       }
 
     })
-
-    ping('info', { count: recents.length })
   } else {
     popup.services.DOM.recents.style.display = 'none'
   }
 
+  ping('info', { count: recents.length })
   popup.element.value = ''
+  popup.element.disabled = false
   popup.services.activityIndicator.style.display = 'none'
 }
 

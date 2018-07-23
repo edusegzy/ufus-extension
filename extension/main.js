@@ -12,8 +12,6 @@ function detectConnectionHandler(event) {
 }
 
 function pong(request, _, respond) {
-  console.log(request)
-    
   if (request && request.mode) {
     switch (request.type) {
       case 'error':
@@ -22,7 +20,7 @@ function pong(request, _, respond) {
         break
 
       case 'info':
-        if (request.message && request.message.count) {
+        if (request.message && request.message.count > -1) {
           services.badge.default(
             services.badge.count(request.message.count)
           )
@@ -63,7 +61,7 @@ function pong(request, _, respond) {
 
         if (assert) {
           respond({
-            error: new services.Exception('OQUEUEF_ERR', 'processing too much request'),
+            error: new services.Exception('OQUEUEF_ERR', 'processing too many request'),
             data: null
           })
           break
