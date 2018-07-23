@@ -1,7 +1,7 @@
 var services = require('./src')({
   ctx: window
 })
-
+var queue = []
 
 function detectConnectionHandler(event) {
   if (event.type == 'offline') {
@@ -22,9 +22,9 @@ function pong(request, _, respond) {
         break
 
       case 'info':
-        if (request.message) {
+        if (request.message && request.message.count) {
           services.badge.default(
-            services.badge.count(request.message)
+            services.badge.count(request.message.count)
           )
         }
 
@@ -55,10 +55,20 @@ function pong(request, _, respond) {
         break
 
       /*
-       * process network request, persist and respond to caller
+       * bg process network request, persist and respond to caller
        */
       case 'process':
         var popup = new services.Popup(window, services.store, services.storeSync, {})
+        var assert = queue.indexOf(request.message.long_url) > -1
+
+        if (assert) {
+          respond({ error: new services.Exception('OQUEUEF_ERR', 'processing too much request'), data: null })
+          break
+        }
+
+        if (!assert) {
+          queue.push(request.message.long_url)
+        }
 
         services.api.request({ long_url: request.message.long_url })
           .then(function(response) {
@@ -66,10 +76,13 @@ function pong(request, _, respond) {
             return popup.write(response, 'recents')
           })
           .then(function() {
-            respond('OK')
+            queue = []
+            respond({ error: null, data: 'OK' })
           })
           .catch(function(error) {
+            queue = []
             pong({ mode: 'ping', type: 'error', message: error })
+            respond({ error: error, data: null })
           })
 
         return true
