@@ -10,4 +10,4 @@ deploy:
     branch: master
 
 env:
-  EXTENSION_ID=bkphhkjpkdbihooaidnlfmmmnjabkbac
+  EXTENSION_ID=kcehmhmmioeddhjddnaenanalobejajn
