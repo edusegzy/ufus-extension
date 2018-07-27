@@ -46,7 +46,8 @@ Popup.prototype.write = function(data, key) {
       if (storeData) {
         if (storeData.length >= parseInt(response.storageSize)) {
           // TODO: remove after debugging
-          self.store.set('debug:quota_exceeded', response.storageSize)
+          // TODO: Disable saving data incognito mode
+          // self.store.set('debug:quota_exceeded', response.storageSize)
           return reject(new Exception('QUOTA_EXCEEDED_ERR', 'max quota storagesize exceeded'))
         }
 

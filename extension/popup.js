@@ -161,12 +161,14 @@ function popupBannerAlert(message, popup) {
   var popupAlert = document.getElementById('popup-alert')
 
   if (popup) {
-    // popup.element.value = ''
+    popup.element.disabled = false
     popup.services.activityIndicator.style.display = 'none'
   }
 
   popupAlert.style.display = 'block'
   popupAlert.innerHTML = (message || 'Unknown error')
+
+  setTimeout(function() { popupAlert.style.display = 'none' }, 2500)
 }
 
 function ping(type, message, callback) {
